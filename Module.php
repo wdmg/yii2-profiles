@@ -76,11 +76,11 @@ class Module extends BaseModule
         $items = [
             'label' => $this->name,
             'url' => '#',
-            'icon' => 'fa fa-fw fa-user',
+            'icon' => 'fa fa-fw fa-id-card',
             'active' => in_array(\Yii::$app->controller->module->id, [$this->id]),
             'items' => [
                 [
-                    'label' => Yii::t('app/modules/profiles', 'User profiles'),
+                    'label' => Yii::t('app/modules/profiles', 'Profiles list'),
                     'url' => [$this->routePrefix . '/profiles/profiles/'],
                     'active' => (in_array(\Yii::$app->controller->module->id, ['profiles']) &&  Yii::$app->controller->id == 'profiles'),
                 ], [

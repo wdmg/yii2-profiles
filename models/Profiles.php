@@ -32,14 +32,15 @@ class Profiles extends \yii\db\ActiveRecord
     public function rules()
     {
         $rules = [
-            [['user_id'], 'required'],
+            [['locale', 'time_zone'], 'required'],
             [['user_id'], 'integer'],
-            [['user_id'], 'unique'],
+            [['time_zone'], 'string', 'max' => 64],
             [['created_at', 'updated_at'], 'safe'],
         ];
 
         if (class_exists('\wdmg\users\models\Users') && isset(Yii::$app->modules['users'])) {
             $rules[] = [['user_id'], 'required'];
+            $rules[] = [['user_id'], 'unique'];
             $rules[] = [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => \wdmg\users\models\Users::class, 'targetAttribute' => ['user_id' => 'id']];
         }
 
@@ -55,6 +56,8 @@ class Profiles extends \yii\db\ActiveRecord
             'id' => Yii::t('app/modules/profiles', 'ID'),
             'user_id' => Yii::t('app/modules/profiles', 'User ID'),
             // ...
+            'locale' => Yii::t('app/modules/profiles', 'Locale'),
+            'time_zone' => Yii::t('app/modules/profiles', 'Time zone'),
             'created_at' => Yii::t('app/modules/profiles', 'Created at'),
             'updated_at' => Yii::t('app/modules/profiles', 'Updated at'),
         ];

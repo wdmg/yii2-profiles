@@ -1,0 +1,48 @@
+<?php
+
+use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\widgets\Pjax;
+/* @var $this yii\web\View */
+/* @var $searchModel wdmg\likes\models\LikesSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = Yii::t('app/modules/profiles', 'Custom fields');
+$this->params['breadcrumbs'][] = $this->title;
+
+?>
+<div class="page-header">
+    <h1>
+        <?= Html::encode($this->title) ?> <small class="text-muted pull-right">[v.<?= $this->context->module->version ?>]</small>
+    </h1>
+</div>
+<div class="profiles-fields-index">
+    <?php Pjax::begin(); ?>
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'layout' => '{summary}<br\/>{items}<br\/>{summary}<br\/><div class="text-center">{pager}</div>',
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            'id',
+            'label',
+            'name',
+            'placeholder',
+            'description',
+            'type',
+            'sort_order',
+            'params',
+            'is_required',
+            'status',
+            'locale',
+            'created_at',
+            'created_by',
+            'updated_at',
+            'updated_by',
+        ],
+    ]); ?>
+    <hr/>
+    <?php Pjax::end(); ?>
+</div>
+
+<?php echo $this->render('../_debug'); ?>
