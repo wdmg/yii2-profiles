@@ -54,7 +54,7 @@ class m210118_023214_profiles_fields extends Migration
         );
 
         // Setup foreign key to source id
-        $this->createIndex('{{%idx-profiles_fields-source}}', '{{%profiles_fields}}', ['source_id']);
+        $this->createIndex('{{%idx_profiles_fields_source}}', '{{%profiles_fields}}', ['source_id']);
         $this->addForeignKey(
             'fk_profiles_fields_to_source',
             '{{%profiles_fields}}',
@@ -66,7 +66,7 @@ class m210118_023214_profiles_fields extends Migration
         );
 
         // If module `Translations` exist setup foreign key `locale` to `trans_langs.locale`
-        $this->createIndex('{{%idx-profiles_fields-locale}}', '{{%profiles_fields}}', ['locale']);
+        $this->createIndex('{{%idx_profiles_fields_locale}}', '{{%profiles_fields}}', ['locale']);
         if (class_exists('\wdmg\translations\models\Languages')) {
             $langsTable = \wdmg\translations\models\Languages::tableName();
             $this->addForeignKey(
@@ -82,8 +82,8 @@ class m210118_023214_profiles_fields extends Migration
 
         // If exist module `Users` set foreign key `created_by`, `updated_by` to `users.id`
         if (class_exists('\wdmg\users\models\Users')) {
-            $this->createIndex('{{%idx-profiles_fields-created}}','{{%profiles_fields}}', ['created_by'],false);
-            $this->createIndex('{{%idx-profiles_fields-updated}}','{{%profiles_fields}}', ['updated_by'],false);
+            $this->createIndex('{{%idx_profiles_fields_created}}','{{%profiles_fields}}', ['created_by'],false);
+            $this->createIndex('{{%idx_profiles_fields_updated}}','{{%profiles_fields}}', ['updated_by'],false);
             $userTable = \wdmg\users\models\Users::tableName();
             $this->addForeignKey(
                 'fk_profiles_fields_to_users1',
@@ -113,14 +113,14 @@ class m210118_023214_profiles_fields extends Migration
     public function safeDown()
     {
         $this->dropIndex('{{%idx_profiles_fields}}', '{{%profiles_fields}}');
-        $this->dropIndex('{{%idx-profiles_fields-source}}', '{{%profiles_fields}}');
+        $this->dropIndex('{{%idx_profiles_fields_source}}', '{{%profiles_fields}}');
 
         $this->dropForeignKey(
             'fk_profiles_fields_to_source',
             '{{%profiles_fields}}'
         );
 
-        $this->dropIndex('{{%idx-profiles_fields-locale}}', '{{%profiles_fields}}');
+        $this->dropIndex('{{%idx_profiles_fields_locale}}', '{{%profiles_fields}}');
         if (class_exists('\wdmg\translations\models\Languages')) {
             $this->dropForeignKey(
                 'fk_profiles_fields_to_langs',
@@ -129,8 +129,8 @@ class m210118_023214_profiles_fields extends Migration
         }
 
         if (class_exists('\wdmg\users\models\Users')) {
-            $this->dropIndex('{{%idx-profiles_fields-created}}', '{{%profiles_fields}}');
-            $this->dropIndex('{{%idx-profiles_fields-updated}}', '{{%profiles_fields}}');
+            $this->dropIndex('{{%idx_profiles_fields_created}}', '{{%profiles_fields}}');
+            $this->dropIndex('{{%idx_profiles_fields_updated}}', '{{%profiles_fields}}');
             $userTable = \wdmg\users\models\Users::tableName();
             if (!(Yii::$app->db->getTableSchema($userTable, true) === null)) {
                 $this->dropForeignKey(

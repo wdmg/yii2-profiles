@@ -27,6 +27,7 @@ class m210118_010907_profiles extends Migration
             // ...
             'locale' => $this->string(10)->defaultValue($defaultLocale),
             'time_zone' => $this->string(64),
+            'status' => $this->tinyInteger(1)->null()->defaultValue(0),
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->datetime()->defaultExpression('CURRENT_TIMESTAMP'),
         ], $tableOptions);
@@ -36,9 +37,9 @@ class m210118_010907_profiles extends Migration
             '{{%profiles}}',
             [
                 'id',
-                'user_id',
                 'locale',
-                'time_zone'
+                'time_zone',
+                'status'
             ]
         );
 
@@ -58,7 +59,8 @@ class m210118_010907_profiles extends Migration
         }
 
         // If exist module `Users` set foreign key `user_id` to `users.id`
-        if(class_exists('\wdmg\users\models\Users') && isset(Yii::$app->modules['users'])) {
+        if (class_exists('\wdmg\users\models\Users')) {
+            $this->createIndex('{{%idx_profiles_users}}','{{%profiles}}', ['user_id'],false);
             $userTable = \wdmg\users\models\Users::tableName();
             $this->addForeignKey(
                 'fk_profiles_to_users',
@@ -88,7 +90,8 @@ class m210118_010907_profiles extends Migration
             );
         }
 
-        if(class_exists('\wdmg\users\models\Users') && isset(Yii::$app->modules['users'])) {
+        if (class_exists('\wdmg\users\models\Users')) {
+            $this->dropIndex('{{%idx_profiles_users}}', '{{%profiles}}');
             $userTable = \wdmg\users\models\Users::tableName();
             if (!(Yii::$app->db->getTableSchema($userTable, true) === null)) {
                 $this->dropForeignKey(

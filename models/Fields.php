@@ -9,7 +9,7 @@ use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
-use yii\helpers\ArrayHelper;
+use wdmg\helpers\ArrayHelper;
 use wdmg\base\behaviors\SluggableBehavior;
 
 /**
@@ -29,10 +29,12 @@ use wdmg\base\behaviors\SluggableBehavior;
 class Fields extends ActiveRecordML
 {
 
-    const STATUS_DRAFT = 0; // Form field has draft
-    const STATUS_PUBLISHED = 1; // Form field has been published
+    const STATUS_DELETED = -1; // Profile field been deleted
+    const STATUS_DRAFT = 0; // Profile field has draft
+    const STATUS_PUBLISHED = 1; // Profile field has been published
+    const STATUS_SUSPENDED = 2; // Profile field has been suspended
 
-    private $fieldsTypes = [
+    private $_fieldsTypes = [
         1 => 'text',
         2 => 'textarea',
         3 => 'checkbox',
@@ -86,19 +88,19 @@ class Fields extends ActiveRecordML
      */
     public function rules()
     {
-        $rules = [
-            [['source_id', 'label', 'type'], 'required'],
-            [['source_id', 'type', 'sort_order'], 'integer'],
+        $rules = parent::rules();
+        $rules = ArrayHelper::merge($rules, [
+            [['source_id', 'label', 'type', 'status'], 'required'],
+            [['source_id', 'type', 'sort_order', 'status'], 'integer'],
             [['params'], 'string'],
             [['label', 'name'], 'string', 'max' => 64],
             ['name', 'match', 'pattern' => '/^[A-za-z]/', 'message' => Yii::t('app/modules/profiles','The attribute must begin with a letter.')],
             ['name', 'match', 'pattern' => '/^[A-Za-z0-9\_]+$/', 'message' => Yii::t('app/modules/profiles','It allowed only Latin alphabet, numbers and «_» character.')],
-            [['status', 'is_required'], 'boolean'],
             [['placeholder'], 'string', 'max' => 124],
             [['description'], 'string', 'max' => 255],
             [['source_id'], 'exist', 'skipOnError' => false, 'targetClass' => Profiles::class, 'targetAttribute' => ['source_id' => 'id']],
             [['created_at', 'updated_at'], 'safe'],
-        ];
+        ]);
 
         if (class_exists('\wdmg\users\models\Users')) {
             $rules[] = [['created_by', 'updated_by'], 'safe'];
@@ -161,7 +163,7 @@ class Fields extends ActiveRecordML
      */
     public function getFieldsTypes()
     {
-        return $this->fieldsTypes;
+        return $this->_fieldsTypes;
     }
 
     /**

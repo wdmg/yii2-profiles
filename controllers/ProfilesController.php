@@ -68,6 +68,80 @@ class ProfilesController extends Controller
         ]);
     }
 
+    public function actionView($id)
+    {
+        $model = $this->findModel($id);
+        return $this->render('view', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ($model->save())
+                Yii::$app->getSession()->setFlash(
+                    'success',
+                    Yii::t('app/modules/profiles', 'User profile has been successfully updated!')
+                );
+            else
+                Yii::$app->getSession()->setFlash(
+                    'danger',
+                    Yii::t('app/modules/profiles', 'An error occurred while updating the user profile.')
+                );
+
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('update', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionCreate()
+    {
+        $model = new Profiles();
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ($model->save())
+                Yii::$app->getSession()->setFlash(
+                    'success',
+                    Yii::t('app/modules/profiles', 'User profile has been successfully created!')
+                );
+            else
+                Yii::$app->getSession()->setFlash(
+                    'danger',
+                    Yii::t('app/modules/profiles', 'An error occurred while creating the user profile.')
+                );
+
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('create', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionDelete($id)
+    {
+        if ($this->findModel($id)->delete())
+            Yii::$app->getSession()->setFlash(
+                'success',
+                Yii::t('app/modules/profiles', 'User profile has been successfully deleted!')
+            );
+        else
+            Yii::$app->getSession()->setFlash(
+                'danger',
+                Yii::t('app/modules/profiles', 'An error occurred while deleting the user profile.')
+            );
+
+        return $this->redirect(['index']);
+    }
+
     /**
      * Finds the model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

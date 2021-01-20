@@ -40,6 +40,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at',
             'updated_by',
         ],
+        'pager' => [
+            'options' => [
+                'class' => 'pagination',
+            ],
+            'maxButtonCount' => 5,
+            'activePageCssClass' => 'active',
+            'prevPageCssClass' => 'prev',
+            'nextPageCssClass' => 'next',
+            'firstPageCssClass' => 'first',
+            'lastPageCssClass' => 'last',
+            'firstPageLabel' => Yii::t('app/modules/profiles', 'First page'),
+            'lastPageLabel'  => Yii::t('app/modules/profiles', 'Last page'),
+            'prevPageLabel'  => Yii::t('app/modules/profiles', '&larr; Prev page'),
+            'nextPageLabel'  => Yii::t('app/modules/profiles', 'Next page &rarr;')
+        ],
     ]); ?>
     <hr/>
     <?php Pjax::end(); ?>
