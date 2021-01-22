@@ -8,7 +8,7 @@ use yii\helpers\Html;
 $this->title = Yii::t('app/modules/profiles', 'Update user profile: {user}', [
     'user' => $model->user->username,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app/modules/profiles', 'User profiles'), 'url' => ['profiles/index']];
+$this->params['breadcrumbs'][] = ['label' => $this->context->module->name, 'url' => ['profiles/index']];
 $this->params['breadcrumbs'][] = $model->user->username;
 ?>
 <div class="page-header">

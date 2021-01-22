@@ -58,4 +58,5 @@ Use the `Module::dashboardNavItems()` method of the module to generate a navigat
     ?>
 
 # Status and version [in progress development]
+* v.1.0.0 - Added CRUD for profiles and custom fields
 * v.0.0.1 - Module, models, component, translations and migrations

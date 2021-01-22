@@ -118,6 +118,7 @@ class Fields extends ActiveRecordML
             'id' => Yii::t('app/modules/profiles', 'ID'),
             'source_id' => Yii::t('app/modules/profiles', 'Source ID'),
             'label' => Yii::t('app/modules/profiles', 'Field label'),
+            'locale' => Yii::t('app/modules/profiles', 'Locale'),
             'name' => Yii::t('app/modules/profiles', 'Input name'),
             'placeholder' => Yii::t('app/modules/profiles', 'Placeholder'),
             'description' => Yii::t('app/modules/profiles', 'Description'),
@@ -142,20 +143,19 @@ class Fields extends ActiveRecordML
         $this->attribute = str_replace('-', '_', $this->name);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProfilesContents()
+    public function afterSave($insert, $changedAttributes)
     {
-        return $this->hasMany(Content::class, ['input_id' => 'id']);
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($insert) {
+            Profiles::addFieldColumn($this->name, $this->type, null);
+        }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getForm()
+    public function afterDelete()
     {
-        return $this->hasOne(Profiles::class, ['id' => 'source_id']);
+        parent::afterDelete();
+        Profiles::addFieldColumn($this->name);
     }
 
     /**
@@ -169,7 +169,7 @@ class Fields extends ActiveRecordML
     /**
      * @return array
      */
-    public function getFieldType($type = null)
+    /*public function getFieldType($type = null)
     {
         if (is_null($type))
             return null;
@@ -179,7 +179,7 @@ class Fields extends ActiveRecordML
             return $types[$type];
         else
             return null;
-    }
+    }*/
 
     /**
      * @return array
@@ -198,7 +198,7 @@ class Fields extends ActiveRecordML
     /**
      *
      */
-    public function getValidator()
+    /*public function getValidator()
     {
         switch ($this->type) {
             case 1: // 'text'
@@ -244,41 +244,24 @@ class Fields extends ActiveRecordML
             default:
                 return 'string';
         }
-    }
-
-    /**
-     * @return object of \yii\db\ActiveQuery
-     */
-    public function getAllProfiles($cond = null, $select = ['id', 'name'], $asArray = false)
-    {
-        if ($cond) {
-            if ($asArray)
-                return Profiles::find()->select($select)->where($cond)->asArray()->indexBy('id')->all();
-            else
-                return Profiles::find()->select($select)->where($cond)->all();
-
-        } else {
-            if ($asArray)
-                return Profiles::find()->select($select)->asArray()->indexBy('id')->all();
-            else
-                return Profiles::find()->select($select)->all();
-        }
-    }
+    }*/
 
     /**
      * @return array
      */
-    public function getAllProfilesList($allTags = false)
+    public function getIsRequiredList($allVariants = false)
     {
         $list = [];
-        if ($allTags)
-            $list['*'] = Yii::t('app/modules/profiles', 'All fields');
-
-        if ($tags = $this->getAllProfiles(['source_id' => null], ['id', 'name'], true)) {
-            $list = ArrayHelper::merge($list, ArrayHelper::map($tags, 'id', 'name'));
+        if ($allVariants) {
+            $list = [
+                '*' => Yii::t('app/modules/profiles', 'All variants')
+            ];
         }
 
-        return $list;
+        return ArrayHelper::merge($list, [
+            0 => Yii::t('app/modules/profiles', 'Required'),
+            1 => Yii::t('app/modules/profiles', 'Not required'),
+        ]);
     }
 
     /**
@@ -286,16 +269,18 @@ class Fields extends ActiveRecordML
      */
     public function getStatusesList($allStatuses = false)
     {
-        if ($allStatuses)
-            return [
-                '*' => Yii::t('app/modules/profiles', 'All statuses'),
-                self::STATUS_DRAFT => Yii::t('app/modules/profiles', 'Draft'),
-                self::STATUS_PUBLISHED => Yii::t('app/modules/profiles', 'Published'),
+        $list = [];
+        if ($allStatuses) {
+            $list = [
+                '*' => Yii::t('app/modules/profiles', 'All statuses')
             ];
-        else
-            return [
-                self::STATUS_DRAFT => Yii::t('app/modules/profiles', 'Draft'),
-                self::STATUS_PUBLISHED => Yii::t('app/modules/profiles', 'Published'),
-            ];
+        }
+
+        return ArrayHelper::merge($list, [
+            self::STATUS_DRAFT => Yii::t('app/modules/profiles', 'Draft'),
+            self::STATUS_PUBLISHED => Yii::t('app/modules/profiles', 'Published'),
+            self::STATUS_DELETED => Yii::t('app/modules/profiles', 'Deleted'),
+            self::STATUS_SUSPENDED => Yii::t('app/modules/profiles', 'Suspended'),
+        ]);
     }
 }

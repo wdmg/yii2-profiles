@@ -2,11 +2,12 @@
 
 namespace wdmg\profiles\models;
 
+use function PHPSTORM_META\elementType;
 use wdmg\helpers\ArrayHelper;
 use wdmg\helpers\DateAndTime;
 use Yii;
 use wdmg\base\models\ActiveRecordML;
-
+use yii\base\InvalidConfigException;
 
 
 /**
@@ -55,9 +56,11 @@ class Profiles extends ActiveRecordML
                 $label = $field->label;
                 $this->_labels[$name] = $label;
                 $this->_rules[] = [$name, 'string'];
-                //$this->$name = '';
             }
         }
+
+        $this->addFieldColumn('my_test_column', 'text', 250, 'Text value');
+        $this->dropFieldColumn('my_test_column');
     }
 
     /**
@@ -68,8 +71,14 @@ class Profiles extends ActiveRecordML
         $rules = parent::rules();
         $rules = ArrayHelper::merge($rules, [
             [['locale', 'time_zone', 'status'], 'required'],
+            ['user_id', 'required', 'on' => self::SCENARIO_CREATE],
+            ['user_id', 'in', 'range' => array_keys(self::getUsersList(false)), 'on' => self::SCENARIO_CREATE],
             [['user_id', 'status'], 'integer'],
+            ['status', 'in', 'range' => array_keys(self::getStatusesList(false))],
+            [['locale'], 'string', 'max' => 10],
+            ['locale', 'in', 'range' => array_keys(self::getLanguagesList(false))],
             [['time_zone'], 'string', 'max' => 64],
+            ['time_zone', 'in', 'range' => array_keys(self::getTimezonesList(false))],
             [['created_at', 'updated_at'], 'safe'],
         ]);
 
@@ -103,10 +112,21 @@ class Profiles extends ActiveRecordML
         return $labels;
     }
 
-    public function getUsersList() {
+    public function getUsersList($allUsers = false) {
         if (class_exists('\wdmg\users\models\Users')) {
-            $list = \wdmg\users\models\Users::findAll(['status' => \wdmg\users\models\Users::USR_STATUS_ACTIVE]);
-            return ArrayHelper::map($list, 'id', 'username');
+
+            $usersTable = \wdmg\users\models\Users::tableName();
+            $users = \wdmg\users\models\Users::find()->where(["$usersTable.`status`" => \wdmg\users\models\Users::USR_STATUS_ACTIVE]);
+            $users->select(["$usersTable.`id`", "$usersTable.`username`"]);
+            if (!$allUsers) {
+                $profilesTable = self::tableName();
+                $users->leftJoin($profilesTable, "$usersTable.`id` = $profilesTable.`user_id`")
+                    ->andWhere(['is', "$profilesTable.`user_id`", null]);
+            } else {
+                $users = \wdmg\users\models\Users::find()->where(['status' => \wdmg\users\models\Users::USR_STATUS_ACTIVE]);
+            }
+
+            return ArrayHelper::map($users->asArray()->all(), 'id', 'username');
         } else {
             return [];
         }
@@ -197,4 +217,81 @@ class Profiles extends ActiveRecordML
             return null;
     }
 
+
+    public static function addFieldColumn($columnName = null, $columnType = null, $maxLength = null) {
+
+        if (!is_string($columnName)) {
+            throw new InvalidConfigException("Method property `columnName` must be a string.");
+        }
+
+        if (!is_string($columnType)) {
+            throw new InvalidConfigException("Method property `columnType` must be a string.");
+        }
+
+        if (!empty($maxLength) && !is_int($maxLength)) {
+            throw new InvalidConfigException("Method property `maxLength` must be a integer.");
+        }
+
+        $db = Yii::$app->getDb();
+        $schema = $db->getSchema();
+        $table = self::tableName();
+        $column = trim($columnName);
+        if (is_null($schema->getTableSchema($table)->getColumn($column))) {
+
+            $length = null;
+            if (in_array($columnType, ['textarea'])) {
+                $schemaType = $schema::TYPE_TEXT;
+            } elseif (in_array($columnType, ['checkbox'])) {
+                $schemaType = $schema::TYPE_BOOLEAN;
+
+                if (!$maxLength)
+                    $length = 1;
+
+            } elseif (in_array($columnType, ['number', 'range'])) {
+                $schemaType = $schema::TYPE_INTEGER;
+
+                if (!$maxLength)
+                    $length = 4;
+
+            } elseif (in_array($columnType, ['date'])) {
+                $schemaType = $schema::TYPE_DATE;
+            } elseif (in_array($columnType, ['time'])) {
+                $schemaType = $schema::TYPE_TIME;
+            } elseif (in_array($columnType, ['datetime', 'datetime-local'])) {
+                $schemaType = $schema::TYPE_DATETIME;
+            } else {
+                $schemaType = $schema::TYPE_STRING;
+
+                if (!$maxLength)
+                    $length = 255;
+            }
+
+            if ($maxLength)
+                $length = intval($maxLength);
+
+            $type = $schema->createColumnSchemaBuilder($schemaType, $length)->after('status');
+            $results = $db->createCommand()->addColumn(self::tableName(), $column, $type)->execute();
+
+            return $results;
+        }
+
+        return false;
+    }
+
+    public static function dropFieldColumn($columnName = null) {
+        if (!is_string($columnName)) {
+            throw new InvalidConfigException("Method property `columnName` must be a string.");
+        }
+
+        $db = Yii::$app->getDb();
+        $schema = $db->getSchema();
+        $table = self::tableName();
+        $column = trim($columnName);
+        if (!is_null($schema->getTableSchema($table)->getColumn($column))) {
+            $results = $db->createCommand()->dropColumn(self::tableName(), $column)->execute();
+            return $results;
+        }
+
+        return false;
+    }
 }

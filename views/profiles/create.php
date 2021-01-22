@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model wdmg\profiles\models\Profiles */
 
 $this->title = Yii::t('app/modules/profiles', 'Add new profile');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app/modules/profiles', 'User profiles'), 'url' => ['profiles/index']];
+$this->params['breadcrumbs'][] = ['label' => $this->context->module->name, 'url' => ['profiles/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="page-header">

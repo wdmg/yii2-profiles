@@ -44,6 +44,12 @@ class Module extends BaseModule
     public $description = "System of managing user profiles";
 
     /**
+     * @var array, the list of support locales for multi-language versions of сгыещь ашудвы.
+     * @note This variable will be override if you use the `wdmg\yii2-translations` module.
+     */
+    public $supportLocales = ['ru-RU', 'uk-UA', 'en-US'];
+
+    /**
      * @var string the module version
      */
     private $version = "0.0.1";

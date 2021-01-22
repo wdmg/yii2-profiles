@@ -39,18 +39,34 @@ use wdmg\widgets\SelectInput;
             Alert::end();
         }
     ?>
-    <?= $form->field($model, 'user_id')->widget(SelectInput::class, [
-        'items' => $model->getUsersList(),
-        'options' => [
-            'class' => 'form-control'
-        ]
-    ]); ?>
+    <?php
+        if ($model->id) {
+            if ($user = $model->user) {
+                $username = Html::a($user->username, ['users/users/view', 'id' => $model->user_id], [
+                    'target' => '_blank',
+                    'data-pjax' => 0
+                ]);
+            } else {
+                $username = $model->user_id;
+            }
+
+            echo $form->field($model, 'user_id', ['template' => "{label}\n{hint}\n<p class=\"form-control-static\">$username</p>\n{error}"])
+                ->textInput(['readonly' => true])->label(Yii::t('app/modules/profiles', 'User'));
+        } else {
+            echo $form->field($model, 'user_id')->widget(SelectInput::class, [
+                'items' => $model->getUsersList(false),
+                'options' => [
+                    'class' => 'form-control'
+                ]
+            ])->label(Yii::t('app/modules/profiles', 'User'));
+        }
+    ?>
     <?= $form->field($model, 'locale')->widget(SelectInput::class, [
         'items' => $model->getLanguagesList(false),
         'options' => [
             'class' => 'form-control'
         ]
-    ]); ?>
+    ])->label(Yii::t('app/modules/profiles', 'Language')); ?>
     <?= $form->field($model, 'time_zone')->widget(SelectInput::class, [
         'items' => $model->getTimezonesList(),
         'options' => [

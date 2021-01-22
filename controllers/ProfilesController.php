@@ -104,6 +104,7 @@ class ProfilesController extends Controller
     public function actionCreate()
     {
         $model = new Profiles();
+        $model->setScenario($model::SCENARIO_CREATE);
 
         if ($model->load(Yii::$app->request->post())) {
 
