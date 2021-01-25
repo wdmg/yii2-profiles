@@ -1,6 +1,9 @@
 Changelog
 =========
  
+## 1.1.*
+ * Validation by reserved stop words
+ 
 ## 1.1.0
  * Added CRUD for profiles and custom fields
  * Migrations and base view`s

@@ -48,19 +48,18 @@ class Profiles extends ActiveRecordML
 
         $fields = $this->getFields();
         foreach($fields as $field) {
-            $name = $field->name;
-            if ($this->hasAttribute($name)) {
-                $this->setAttribute($name, $this->$name);
+            if (isset($field->name)) {
+                $name = $field->name;
+                if ($this->hasAttribute($name)) {
+                    $this->setAttribute($name, $this->$name);
 
-                // Set attribute label of custom field
-                $label = $field->label;
-                $this->_labels[$name] = $label;
-                $this->_rules[] = [$name, 'string'];
+                    // Set attribute label of custom field
+                    $label = $field->label;
+                    $this->_labels[$name] = $label;
+                    $this->_rules[] = [$name, 'string'];
+                }
             }
         }
-
-        $this->addFieldColumn('my_test_column', 'text', 250, 'Text value');
-        $this->dropFieldColumn('my_test_column');
     }
 
     /**
@@ -176,19 +175,25 @@ class Profiles extends ActiveRecordML
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFields()
+    public function getFields($locale = null, $caching = true)
     {
-        $locale = Yii::$app->sourceLanguage;
-        if (isset(Yii::$app->language))
-            $locale = Yii::$app->language;
+        if (is_null($locale)) {
+            $locale = Yii::$app->sourceLanguage;
+            if (isset(Yii::$app->language))
+                $locale = Yii::$app->language;
+        }
 
-        if (!$this->_fields) {
-            $fields = Fields::find(['!=', 'status' => Fields::STATUS_DELETED])->andWhere(['locale' => $locale])->all();
-            if (!empty($fields)) {
-                $this->_fields = $fields;
-                return $this->_fields;
-            } else {
-                return null;
+        if ($fields = Fields::find()->where(['!=', 'status', Fields::STATUS_DELETED])) {
+
+            if (isset($locale))
+                $fields->andWhere(['locale' => $locale]);
+
+            $list = $fields->orderBy('sort_order')->all();
+            if (!empty($list)) {
+                if (!$caching)
+                    return $list;
+                else
+                    $this->_fields = $list;
             }
         }
 

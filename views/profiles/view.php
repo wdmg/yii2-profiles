@@ -64,14 +64,13 @@ JS
         ];
 
         // Add custom fields to columns list
-        if ($fields = $model->getFields()) {
+        if ($fields = $model->getFields($model->locale, false)) {
             foreach ($fields as $field) {
                 if (isset($field->name) && isset($field->label)) {
                     $attribute = $field->name;
-                    $label = $field->label;
                     $columns[] = [
                         'attribute' => $attribute,
-                        'label' => $label,
+                        'label' => $model->getAttributeLabel($attribute),
                         'captionOptions' => ['class' => 'custom-field'],
                         'contentOptions' => ['class' => 'custom-field'],
                     ];

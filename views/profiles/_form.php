@@ -13,7 +13,7 @@ use wdmg\widgets\SelectInput;
     <?php $form = ActiveForm::begin(); ?>
     <?php
         // Build custom fields form inputs
-        if ($fields = $model->getFields()) {
+        if ($fields = $model->getFields($model->locale, false)) {
             foreach ($fields as $field) {
                 if (isset($field->name) && isset($field->label)) {
                     $attribute = $field->name;

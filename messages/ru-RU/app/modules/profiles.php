@@ -36,6 +36,8 @@ return [
     'Not found any custom field available for editing. You can create {link}.' => "Не найдено ни одного произвольного поля, доступного для редактирования. Вы можете создать {link}.",
     'it here' => "его здесь",
 
+    'You can not use this value `{value}` for field `{attribute}`' => "Вы не можете использовать значение `{value}` для поля `{attribute}`",
+
     'All fields' => "Все поля",
 
     'All statuses' => "Все статусы",
@@ -46,11 +48,13 @@ return [
     'Awaiting' => "Ожидание",
 
     'Add new profile' => "Добавить профиль",
+    'Add field' => "Добавить поле",
     'User date/time:' => "Дата/время пользователя:",
 
     'User profile: {user}' => "Профиль пользователя: {user}",
     'Update user profile: {user}' => "Редактирование профиля: {user}",
 
+    'Create field' => "Создание нового поля",
     'Update field: {label}' => "Редактирование поля: {label}",
 
     'User' => "Пользователь",

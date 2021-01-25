@@ -50,6 +50,20 @@ class Module extends BaseModule
     public $supportLocales = ['ru-RU', 'uk-UA', 'en-US'];
 
     /**
+     * List of reserved stop words for fields validation
+     *
+     * @var array
+     */
+    public $reservedFields = [
+        'admin',
+        'administrator',
+        'root',
+        'superuser',
+        'supervisor',
+        'timezone',
+    ];
+
+    /**
      * @var string the module version
      */
     private $version = "1.0.0";

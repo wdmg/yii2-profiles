@@ -553,6 +553,9 @@ if (isset(Yii::$app->translations) && class_exists('\wdmg\translations\FlagsAsse
         ],
     ]); ?>
     <hr/>
+    <div>
+        <?= Html::a(Yii::t('app/modules/profiles', 'Add field'), ['fields/create'], ['class' => 'btn btn-add btn-success pull-right']) ?>
+    </div>
     <?php Pjax::end(); ?>
 </div>
 

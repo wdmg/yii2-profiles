@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->context->module->name;
         ];
 
         // Add custom fields to columns list
-        if ($fields = $searchModel->getFields()) {
+        if ($fields = $searchModel->getFields(null, false)) {
             foreach ($fields as $field) {
                 if (isset($field->name) && isset($field->label)) {
                     $attribute = $field->name;
@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->context->module->name;
     ]); ?>
     <hr/>
     <div>
-        <?= Html::a(Yii::t('app/modules/profiles', 'Add new profile'), ['profiles/create'], ['class' => 'btn btn-success pull-right']) ?>
+        <?= Html::a(Yii::t('app/modules/profiles', 'Add new profile'), ['profiles/create'], ['class' => 'btn btn-add btn-success pull-right']) ?>
     </div>
     <?php Pjax::end(); ?>
 </div>

@@ -15,6 +15,7 @@ use yii\filters\AccessControl;
  */
 class ProfilesController extends Controller
 {
+
     /**
      * {@inheritdoc}
      */
