@@ -39,8 +39,10 @@ return [
     'You can not use this value `{value}` for field `{attribute}`' => "Вы не можете использовать значение `{value}` для поля `{attribute}`",
 
     'All fields' => "Все поля",
-
     'All statuses' => "Все статусы",
+    'All languages' => "Все языки",
+    'All zones' => "Все зоны",
+
     'Draft' => "Черновик",
     'Published' => "Опубликовано",
     'Deleted' => "Удалено",

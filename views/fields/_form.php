@@ -11,22 +11,20 @@ use wdmg\widgets\SelectInput;
 ?>
 
 <div class="fields-form">
-    <?php
-        echo LangSwitcher::widget([
-            'label' => Yii::t('app/modules/profiles', 'Language version'),
-            'model' => $model,
-            'renderWidget' => 'button-group',
-            'createRoute' => 'fields/create',
-            'updateRoute' => 'fields/update',
-            'supportLocales' => $this->context->module->supportLocales,
-            //'currentLocale' => $this->context->getLocale(),
-            'versions' => (isset($model->source_id)) ? $model->getAllVersions($model->source_id, true) : $model->getAllVersions($model->id, true),
-            'options' => [
-                'id' => 'locale-switcher',
-                'class' => 'pull-right'
-            ]
-        ]);
-    ?>
+    <?= LangSwitcher::widget([
+        'label' => Yii::t('app/modules/profiles', 'Language version'),
+        'model' => $model,
+        'renderWidget' => 'button-group',
+        'createRoute' => 'fields/create',
+        'updateRoute' => 'fields/update',
+        'supportLocales' => $this->context->module->supportLocales,
+        //'currentLocale' => $this->context->getLocale(),
+        'versions' => (isset($model->source_id)) ? $model->getAllVersions($model->source_id, true) : $model->getAllVersions($model->id, true),
+        'options' => [
+            'id' => 'locale-switcher',
+            'class' => 'pull-right'
+        ]
+    ]); ?>
 
     <?php
 

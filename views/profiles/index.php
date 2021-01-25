@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use wdmg\widgets\SelectInput;
+use wdmg\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel wdmg\likes\models\LikesSearch */
@@ -11,6 +12,11 @@ use wdmg\widgets\SelectInput;
 
 $this->title = Yii::t('app/modules/profiles', 'User profiles');
 $this->params['breadcrumbs'][] = $this->context->module->name;
+
+$bundle = false;
+if (isset(Yii::$app->translations) && class_exists('\wdmg\translations\FlagsAsset')) {
+    $bundle = \wdmg\translations\FlagsAsset::register(Yii::$app->view);
+}
 
 ?>
 <style>
@@ -70,8 +76,91 @@ $this->params['breadcrumbs'][] = $this->context->module->name;
         }
 
         $columns = \wdmg\helpers\ArrayHelper::merge($columns, [
-            'locale',
-            'time_zone',
+
+            [
+                'attribute' => 'locale',
+                'label' => Yii::t('app/modules/profiles','Language'),
+                'format' => 'raw',
+                'filter' => SelectInput::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'locale',
+                    'items' => $searchModel->getLanguagesList(true),
+                    'options' => [
+                        'class' => 'form-control'
+                    ]
+                ]),
+                'headerOptions' => [
+                    'class' => 'text-center',
+                    'style' => 'min-width:96px;'
+                ],
+                'contentOptions' => [
+                    'class' => 'text-center'
+                ],
+                'value' => function($data) use ($bundle) {
+                    $output = [];
+                    $separator = ", ";
+                    if (isset(Yii::$app->translations)) {
+                        $locale = Yii::$app->translations->parseLocale($data->locale, Yii::$app->language);
+                        if ($data->locale === $locale['locale']) { // Fixing default locale from PECL intl
+
+                            if (!($country = $locale['domain']))
+                                $country = '_unknown';
+
+                            $output[] = \yii\helpers\Html::img($bundle->baseUrl . '/flags-iso/flat/24/' . $country . '.png', [
+                                'alt' => $locale['name'],
+                                'title' => $locale['name'],
+                                'data-toggle' => 'tooltip'
+                            ]);
+                        }
+                        $separator = "";
+                    } else {
+                        if (!empty($data->locale)) {
+
+                            if (extension_loaded('intl'))
+                                $output[] = mb_convert_case(trim(\Locale::getDisplayLanguage($data->locale, Yii::$app->language)), MB_CASE_TITLE, "UTF-8");
+                            else
+                                $output[] = $data->locale;
+                        } else {
+                            return $data->locale;
+                        }
+                    }
+
+
+                    if (is_countable($output)) {
+                        if (count($output) > 0) {
+                            $onMore = false;
+                            if (count($output) > 3)
+                                $onMore = true;
+
+                            if ($onMore)
+                                return join(array_slice($output, 0, 3), $separator) . "&nbsp;…";
+                            else
+                                return join($separator, $output);
+
+                        }
+                    }
+
+                    return null;
+                }
+            ],
+            [
+                'attribute' => 'time_zone',
+                'format' => 'html',
+                'filter' => SelectInput::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'time_zone',
+                    'items' => $searchModel->getTimezonesList(true),
+                    'options' => [
+                        'class' => 'form-control'
+                    ]
+                ]),
+                'headerOptions' => [
+                    'class' => 'text-center'
+                ],
+                'contentOptions' => [
+                    'class' => 'text-center'
+                ],
+            ],
             [
                 'attribute' => 'status',
                 'format' => 'html',

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\bootstrap\Alert;
+use wdmg\widgets\LangSwitcher;
 use wdmg\widgets\SelectInput;
 
 /* @var $this yii\web\View */
@@ -10,6 +11,21 @@ use wdmg\widgets\SelectInput;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <div class="profiles-form">
+    <?= LangSwitcher::widget([
+        'label' => Yii::t('app/modules/profiles', 'Language version'),
+        'model' => $model,
+        'sourceKey' => 'id',
+        'renderWidget' => 'button-group',
+        'createRoute' => 'profiles/create',
+        'updateRoute' => 'profiles/update',
+        'supportLocales' => $this->context->module->supportLocales,
+        'currentLocale' => $this->context->getLocale(),
+        'versions' => (isset($model->id)) ? $model->getAllVersions($model->id, true) : $model->getAllVersions($model->id, true),
+        'options' => [
+            'id' => 'locale-switcher',
+            'class' => 'pull-right'
+        ]
+    ]); ?>
     <?php $form = ActiveForm::begin(); ?>
     <?php
         // Build custom fields form inputs
@@ -61,12 +77,13 @@ use wdmg\widgets\SelectInput;
             ])->label(Yii::t('app/modules/profiles', 'User'));
         }
     ?>
-    <?= $form->field($model, 'locale')->widget(SelectInput::class, [
+    <?php /*$form->field($model, 'locale')->widget(SelectInput::class, [
         'items' => $model->getLanguagesList(false),
         'options' => [
             'class' => 'form-control'
         ]
-    ])->label(Yii::t('app/modules/profiles', 'Language')); ?>
+    ])->label(Yii::t('app/modules/profiles', 'Language'));*/ ?>
+
     <?= $form->field($model, 'time_zone')->widget(SelectInput::class, [
         'items' => $model->getTimezonesList(),
         'options' => [

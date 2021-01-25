@@ -44,7 +44,7 @@ class Module extends BaseModule
     public $description = "System of managing user profiles";
 
     /**
-     * @var array, the list of support locales for multi-language versions of сгыещь ашудвы.
+     * @var array, the list of support locales for multi-language versions of profiles data and custom fields.
      * @note This variable will be override if you use the `wdmg\yii2-translations` module.
      */
     public $supportLocales = ['ru-RU', 'uk-UA', 'en-US'];
@@ -53,6 +53,8 @@ class Module extends BaseModule
      * List of reserved stop words for fields validation
      *
      * @var array
+     * @note This variable will be extended by public properties of models, like `id`, `name`, `created_at` etc.
+     * Therefore, there is no need to list them here.
      */
     public $reservedFields = [
         'admin',
