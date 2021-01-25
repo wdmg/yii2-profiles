@@ -38,7 +38,20 @@ To add a module to the project, add the following data in your configuration fil
         ...
         'profiles' => [
             'class' => 'wdmg\profiles\Module',
-            'routePrefix' => 'admin'
+            'routePrefix' => 'admin',
+            'supportLocales' => [
+                'ru-RU',
+                'uk-UA',
+                'en-US'
+            ],
+            'reservedFields' => [
+                'admin',
+                'administrator',
+                'root',
+                'superuser',
+                'supervisor',
+                'timezone'
+            ]
         ],
         ...
     ],
