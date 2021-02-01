@@ -2,6 +2,8 @@ Changelog
 =========
  
 ## 1.1.*
+ * Custom field fixed
+ * Multi-language support for Profiles model
  * Validation by reserved stop words
  
 ## 1.1.0

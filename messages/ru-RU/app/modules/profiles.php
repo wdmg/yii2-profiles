@@ -80,6 +80,7 @@ return [
     'Delete language version: {language}' => "Удалить языковую версию: {language}",
     'Are you sure you want to delete this field?' => "Вы действительно желаете удалить это поле?",
     'Are you sure you want to delete the language version of this field?' => "Вы действительно желаете удалить языковую версию поля?",
+    'Add language version: {language}' => "Добавить языковую версию: {language}",
 
     'First page' => 'Первая страница',
     'Last page' => 'Последняя страница',

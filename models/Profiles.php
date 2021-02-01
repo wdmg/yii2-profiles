@@ -223,6 +223,17 @@ class Profiles extends ActiveRecordML
     }
 
 
+    /**
+     * Adds a column to the user profile table.
+     *
+     * @param null $columnName
+     * @param null $columnType
+     * @param null $maxLength
+     * @return bool|int
+     * @throws InvalidConfigException
+     * @throws \yii\base\NotSupportedException
+     * @throws \yii\db\Exception
+     */
     public static function addFieldColumn($columnName = null, $columnType = null, $maxLength = null) {
 
         if (!is_string($columnName)) {
@@ -283,6 +294,15 @@ class Profiles extends ActiveRecordML
         return false;
     }
 
+    /**
+     * Remove a column from the user profile table.
+     *
+     * @param null $columnName
+     * @return bool|int
+     * @throws InvalidConfigException
+     * @throws \yii\base\NotSupportedException
+     * @throws \yii\db\Exception
+     */
     public static function dropFieldColumn($columnName = null) {
         if (!is_string($columnName)) {
             throw new InvalidConfigException("Method property `columnName` must be a string.");

@@ -97,7 +97,8 @@ class Fields extends ActiveRecordML
             'class' => SluggableBehavior::class,
             'attribute' => 'label',
             'slugAttribute' => 'name',
-            'replacement' => '_'
+            'replacement' => '_',
+            'immutable' => true
         ];
         return $behaviors;
     }
@@ -115,10 +116,14 @@ class Fields extends ActiveRecordML
             [['label', 'name'], 'string', 'max' => 64],
             ['name', 'match', 'pattern' => '/^[A-za-z]/', 'message' => Yii::t('app/modules/profiles','The attribute must begin with a letter.')],
             ['name', 'match', 'pattern' => '/^[A-Za-z0-9\_]+$/', 'message' => Yii::t('app/modules/profiles','It allowed only Latin alphabet, numbers and «_» character.')],
-            ['name', ReservedValidator::class, 'stoplist' => $this->getReservedAttributes(), 'strict' => false, 'message' => Yii::t('app/modules/profiles','You can not use this value `{value}` for field `{attribute}`')],
+            ['name', ReservedValidator::class,
+                'stoplist' => $this->getReservedAttributes(),
+                'strict' => false,
+                'message' => Yii::t('app/modules/profiles','You can not use this value `{value}` for field `{attribute}`'),
+                'on' => self::SCENARIO_CREATE
+            ],
             [['placeholder'], 'string', 'max' => 124],
             [['description'], 'string', 'max' => 255],
-            [['source_id'], 'exist', 'skipOnError' => false, 'targetClass' => Profiles::class, 'targetAttribute' => ['source_id' => 'id']],
             [['created_at', 'updated_at'], 'safe'],
         ]);
 
@@ -174,19 +179,40 @@ class Fields extends ActiveRecordML
         $this->attribute = str_replace('-', '_', $this->name);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($insert) {
+        if ($insert && is_null($this->source_id))
             Profiles::addFieldColumn($this->name, $this->type, null);
-        }
+
+        if (!$insert && is_null($this->source_id))
+            self::updateAll(['name' => $this->name], ['source_id' => $this->id]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeDelete()
+    {
+        if (is_null($this->source_id))
+            self::deleteAll(['source_id' => $this->id]);
+
+        return parent::beforeDelete();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function afterDelete()
     {
+        if (is_null($this->source_id))
+            Profiles::dropFieldColumn($this->name);
+
         parent::afterDelete();
-        Profiles::addFieldColumn($this->name);
     }
 
     /**
@@ -196,21 +222,6 @@ class Fields extends ActiveRecordML
     {
         return $this->_fieldsTypes;
     }
-
-    /**
-     * @return array
-     */
-    /*public function getFieldType($type = null)
-    {
-        if (is_null($type))
-            return null;
-
-        $types = $this->getFieldsTypes();
-        if (isset($types[$type]))
-            return $types[$type];
-        else
-            return null;
-    }*/
 
     /**
      * @return array
@@ -225,57 +236,6 @@ class Fields extends ActiveRecordML
 
         return $list;
     }
-
-    /**
-     *
-     */
-    /*public function getValidator()
-    {
-        switch ($this->type) {
-            case 1: // 'text'
-                return 'string';
-            case 2: // 'textarea'
-                return 'string';
-            case 3: // 'checkbox'
-                return 'string';
-            case 4: // 'file'
-                return 'string';
-            case 5: // 'hidden'
-                return 'string';
-            case 6: // 'password'
-                return 'string';
-            case 7: // 'radio'
-                return 'string';
-            case 8: // 'color'
-                return 'string';
-            case 9: // 'date'
-                return 'string';
-            case 10: // 'datetime'
-                return 'string';
-            case 11: // 'datetime-local'
-                return 'string';
-            case 12: // 'email'
-                return 'string';
-            case 13: // 'number'
-                return 'string';
-            case 14: // 'range'
-                return 'string';
-            case 15: // 'search'
-                return 'string';
-            case 16: // 'tel'
-                return 'string';
-            case 17: // 'time'
-                return 'string';
-            case 18: // 'url'
-                return 'string';
-            case 19: // 'month'
-                return 'string';
-            case 20: // 'week'
-                return 'string';
-            default:
-                return 'string';
-        }
-    }*/
 
     /**
      * @return array

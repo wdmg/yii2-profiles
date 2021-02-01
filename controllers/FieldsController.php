@@ -161,6 +161,13 @@ class FieldsController extends Controller
             }
         }
 
+        // We change the scenarios if we create a language version. In this case, a number of validations should
+        // not be applied by uniqueness
+        if ($model->source_id)
+            $model->setScenario($model::SCENARIO_UPDATE);
+        else
+            $model->setScenario($model::SCENARIO_CREATE);
+
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 if ($model->validate())
@@ -171,6 +178,13 @@ class FieldsController extends Controller
                 return $this->asJson(['success' => $success, 'name' => $model->name, 'errors' => $model->errors]);
             }
         } else {
+
+            if ($model->load(Yii::$app->request->post())) {
+                $model->validate();
+                var_export($model->source_id);
+                var_export($model->errors);
+            }
+
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
                 if ($model->save()) {

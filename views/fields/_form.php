@@ -36,32 +36,40 @@ use wdmg\widgets\SelectInput;
             ]
         ]);
 
-        $readonly = false;
+        $disabled = false;
         if (is_null($model->id) && (!is_null($model->source_id) && !is_null($model->name)))
-            $readonly = true;
+            $disabled = true;
 
     ?>
 
     <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'name')->textInput([
-        'maxlength' => true,
-        'readonly' => $readonly
-    ]) ?>
+
+    <?php if (is_null($model->source_id)) {
+        echo $form->field($model, 'name')->textInput([
+            'maxlength' => true,
+            'disabled' => $disabled
+        ]);
+    } ?>
+
     <?= $form->field($model, 'placeholder')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'type')->widget(SelectInput::class, [
-        'items' => $model->getFieldsTypesList(false),
-        'options' => [
-            'class' => 'form-control',
-            'readonly' => $readonly
-        ]
-    ]) ?>
+    <?php if (is_null($model->source_id)) {
+        echo $form->field($model, 'type')->widget(SelectInput::class, [
+            'items' => $model->getFieldsTypesList(false),
+            'options' => [
+                'class' => 'form-control',
+                'readonly' => $disabled
+            ]
+        ]);
+    } ?>
 
-    <?= $form->field($model, 'is_required')->checkbox([
-        'label' => Yii::t('app/modules/profiles', '- is required'),
-        'readonly' => $readonly
-    ]) ?>
+    <?php if (is_null($model->source_id)) {
+        echo $form->field($model, 'is_required')->checkbox([
+            'label' => Yii::t('app/modules/profiles', '- is required'),
+            'readonly' => $disabled
+        ]);
+    } ?>
 
     <?= $form->field($model, 'status')->widget(SelectInput::class, [
         'items' => $model->getStatusesList(false),
