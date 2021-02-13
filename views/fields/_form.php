@@ -42,17 +42,18 @@ use wdmg\widgets\SelectInput;
 
     ?>
 
-    <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'label')->textInput(['maxlength' => true, 'lang' => ($model->locale ?? Yii::$app->language)]) ?>
 
     <?php if (is_null($model->source_id)) {
         echo $form->field($model, 'name')->textInput([
             'maxlength' => true,
+            'lang' => ($model->locale ?? Yii::$app->language),
             'disabled' => $disabled
         ]);
     } ?>
 
-    <?= $form->field($model, 'placeholder')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'placeholder')->textInput(['maxlength' => true, 'lang' => ($model->locale ?? Yii::$app->language)]) ?>
+    <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'lang' => ($model->locale ?? Yii::$app->language)]) ?>
 
     <?php if (is_null($model->source_id)) {
         echo $form->field($model, 'type')->widget(SelectInput::class, [

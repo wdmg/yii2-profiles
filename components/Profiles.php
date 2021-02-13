@@ -9,7 +9,7 @@ namespace wdmg\profiles\components;
  * @category        Component
  * @version         1.0.0
  * @author          Alexsander Vyshnyvetskyy <alex.vyshnyvetskyy@gmail.com>
- * @link            https://github.com/wdmg/yii2-likes
+ * @link            https://github.com/wdmg/yii2-profiles
  * @copyright       Copyright (c) 2021 W.D.M.Group, Ukraine
  * @license         https://opensource.org/licenses/MIT Massachusetts Institute of Technology (MIT) License
  *
