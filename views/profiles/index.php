@@ -126,7 +126,7 @@ if (isset(Yii::$app->translations) && class_exists('\wdmg\translations\FlagsAsse
                     }
 
 
-                    if (is_countable($output)) {
+                    if (is_array($output)) {
                         if (count($output) > 0) {
                             $onMore = false;
                             if (count($output) > 3)

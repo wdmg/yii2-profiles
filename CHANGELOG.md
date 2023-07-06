@@ -1,7 +1,8 @@
 Changelog
 =========
  
-## 1.0.*
+## 1.1.0 (2023-07-16)
+ * Update copyrights, fix menu dashboard
  * Lang attribute for HTML tags and inputs
  * Custom field fixed
  * Multi-language support for Profiles model

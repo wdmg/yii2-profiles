@@ -181,7 +181,7 @@ if (isset(Yii::$app->translations) && class_exists('\wdmg\translations\FlagsAsse
                     }
 
 
-                    if (is_countable($output)) {
+                    if (is_array($output)) {
                         if (count($output) > 0) {
                             $onMore = false;
                             if (count($output) > 3)
@@ -323,7 +323,7 @@ if (isset(Yii::$app->translations) && class_exists('\wdmg\translations\FlagsAsse
                             }
                         }
 
-                        if (is_countable($output)) {
+                        if (is_array($output)) {
                             if (count($output) > 1) {
                                 $html = '';
                                 $html .= '<div class="btn-group">';
@@ -405,7 +405,7 @@ if (isset(Yii::$app->translations) && class_exists('\wdmg\translations\FlagsAsse
                             }
                         }
 
-                        if (is_countable($output)) {
+                        if (is_array($output)) {
                             if (count($output) > 1) {
                                 $html = '';
                                 $html .= '<div class="btn-group">';
@@ -499,7 +499,7 @@ if (isset(Yii::$app->translations) && class_exists('\wdmg\translations\FlagsAsse
                             }
                         }
 
-                        if (is_countable($output)) {
+                        if (is_array($output)) {
                             if (count($output) > 1) {
                                 $html = '';
                                 $html .= '<div class="btn-group">';

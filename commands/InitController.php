@@ -33,7 +33,7 @@ class InitController extends Controller
             '║                                                ║'. "\n" .
             '║            PROFILES MODULE, v.'.$version.'            ║'. "\n" .
             '║          by Alexsander Vyshnyvetskyy           ║'. "\n" .
-            '║         (c) 2021 W.D.M.Group, Ukraine          ║'. "\n" .
+            '║         (c) 2023 W.D.M.Group, Ukraine          ║'. "\n" .
             '║                                                ║'. "\n" .
             '╚════════════════════════════════════════════════╝';
         echo $name = $this->ansiFormat($welcome . "\n\n", Console::FG_GREEN);
